@@ -148,7 +148,8 @@ class AppNavigator:
         separators = [
             " then ", " and then ", " after that ", " next ",
             ", then ", ", and then ", ", after that ", ", next ",
-            "; then ", "; and then ", "; after that ", "; next "
+            "; then ", "; and then ", "; after that ", "; next ",
+            " and "
         ]
         
         # Split by each separator
