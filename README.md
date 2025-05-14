@@ -16,7 +16,7 @@ The system consists of three main components:
 
 This component serves as the interface between our navigator and the mobile device:
 
-- Creates and maintains Appium sessions with automatic reconnection
+- Creates and maintains Appium sessions
 - Extracts XML page source from mobile apps
 - Handles platform-specific capabilities for iOS and Android
 - Implements session tracking and health checks
@@ -91,7 +91,7 @@ navigator.close()
 python app_navigator_cli.py --platform ios --device-name "iPhone 16 Pro" --platform-version "18.2" --bundle-id "com.apple.Preferences" "Open WiFi settings"
 
 # Interactive mode with multi-step support
-python app_navigator_cli.py --platform ios --device-name "iPhone 16 Pro" --platform-version "18.2" --bundle-id "com.apple.Preferences" --interactive --debug
+python3 app_navigator_cli.py --platform ios --device-name "iPhone 16 Pro" --platform-version "18.2" --bundle-id "com.apple.Preferences" --interactive --debug
 ```
 
 ## Special Features
@@ -100,7 +100,7 @@ python app_navigator_cli.py --platform ios --device-name "iPhone 16 Pro" --platf
 - **Element Discovery**: Use the "show" command to see all available UI elements
 - **Screenshots**: Capture screenshots during navigation for debugging
 - **Model Selection**: Choose different OpenAI models based on needs and budget
-- **Session Management**: Automatic reconnection if the session is lost
+- **Session Management**: Manual session management with detailed error feedback
 - **Real Device Support**: Connect to real iOS devices with UDID
 
 ## Prerequisites

@@ -41,7 +41,7 @@ class AppiumPageSourceFetcher:
         self.session_id = None
         # Add heartbeat settings
         self.last_command_time = 0
-        self.session_timeout = 60  # seconds
+        self.session_timeout = 1200  # seconds
     
     def set_platform_version(self, version):
         """Set the platform version for iOS or Android"""
@@ -108,19 +108,15 @@ class AppiumPageSourceFetcher:
             return False
     
     def check_session(self):
-        """Check if the session is still active and reconnect if needed"""
+        """Check if the session is still active without automatic reconnection"""
         if not self.driver:
-            print("Session not initialized. Reconnecting...")
-            return self.connect(self.appium_url)
+            print("Session not initialized.")
+            return False
         
         # Check if too much time has passed since the last command
         if time.time() - self.last_command_time > self.session_timeout:
-            print("Session may have timed out. Reconnecting...")
-            try:
-                self.disconnect()
-            except:
-                pass
-            return self.connect(self.appium_url)
+            print("Session may have timed out.")
+            return False
         
         # Try a simple command to test if the session is still active
         try:
@@ -129,12 +125,8 @@ class AppiumPageSourceFetcher:
             self.last_command_time = time.time()
             return True
         except Exception as e:
-            print(f"Session check failed: {str(e)}. Reconnecting...")
-            try:
-                self.disconnect()
-            except:
-                pass
-            return self.connect(self.appium_url)
+            print(f"Session check failed: {str(e)}")
+            return False
     
     def get_page_source(self):
         """Get the page source of the current screen"""
@@ -143,21 +135,44 @@ class AppiumPageSourceFetcher:
             print("Failed to establish a valid session.")
             return None
         
-        try:
-            page_source = self.driver.page_source
-            self.last_command_time = time.time()
-            return page_source
-        except Exception as e:
-            print(f"Failed to get page source: {str(e)}")
-            # Try to reconnect once more
-            if self.check_session():
-                try:
-                    page_source = self.driver.page_source
-                    self.last_command_time = time.time()
-                    return page_source
-                except Exception as e:
-                    print(f"Failed to get page source after reconnect: {str(e)}")
+        for attempt in range(3):  # Try up to 3 times
+            try:
+                # Add a small delay before getting page source
+                time.sleep(0.5)
+                
+                page_source = self.driver.page_source
+                self.last_command_time = time.time()
+                return page_source
+            except Exception as e:
+                print(f"Failed to get page source (attempt {attempt+1}/3): {str(e)}")
+                
+                # Simply retry without disconnecting and reconnecting
+                if attempt < 2:  # Only retry if we have attempts left
+                    time.sleep(2)  # Wait before retrying
+        
+        print("Failed to get page source after multiple attempts")
+        return None
+    
+    def execute_command_safely(self, command_func, *args, **kwargs):
+        """Execute a WebDriver command with session recovery"""
+        if not self.check_session():
+            print("Failed to establish a valid session before executing command")
             return None
+        
+        for attempt in range(3):  # Try up to 3 times
+            try:
+                result = command_func(*args, **kwargs)
+                self.last_command_time = time.time()
+                return result
+            except Exception as e:
+                print(f"Command execution failed (attempt {attempt+1}/3): {str(e)}")
+                
+                # Simply retry without disconnecting and reconnecting
+                if attempt < 2:  # Only retry if we have attempts left
+                    time.sleep(2)  # Wait before retrying
+        
+        print("Failed to execute command after multiple attempts")
+        return None
     
     def save_page_source(self, filename='page_source.xml'):
         """Save the page source to a file"""
