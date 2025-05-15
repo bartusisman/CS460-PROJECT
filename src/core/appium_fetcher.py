@@ -193,27 +193,4 @@ class AppiumPageSourceFetcher:
                 print(f"Warning: Error during disconnect: {str(e)}")
             finally:
                 self.driver = None
-                print("Disconnected from Appium server")
-
-if __name__ == "__main__":
-    # Example usage
-    fetcher = AppiumPageSourceFetcher(platform='android')
-    
-    # For an already installed app
-    fetcher.set_app(
-        app_package='com.example.app',  # Replace with your app package
-        app_activity='com.example.app.MainActivity'  # Replace with your app activity
-    )
-    
-    # Alternatively, for installing and launching an app
-    # fetcher.set_app(app_path='/path/to/your/app.apk')
-    
-    if fetcher.connect():
-        # Give app time to load
-        time.sleep(2)
-        
-        # Get and save page source
-        fetcher.save_page_source()
-        
-        # Disconnect
-        fetcher.disconnect() 
+                print("Disconnected from Appium server") 
