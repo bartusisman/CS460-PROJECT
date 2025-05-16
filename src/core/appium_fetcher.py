@@ -26,6 +26,7 @@ class AppiumPageSourceFetcher:
         self.capabilities = {
             'platformName': platform.capitalize(),
             'deviceName': device_name,
+            'newCommandTimeout': 6000,  # Prevent Appium from ending the session after 6000 seconds of inactivity
         }
         
         # Platform-specific automation settings
@@ -41,7 +42,7 @@ class AppiumPageSourceFetcher:
         self.session_id = None
         # Add heartbeat settings
         self.last_command_time = 0
-        self.session_timeout = 1200  # seconds
+        self.session_timeout = 6000  # seconds (increased from 1200)
     
     def set_platform_version(self, version):
         """Set the platform version for iOS or Android"""

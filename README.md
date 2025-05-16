@@ -175,6 +175,12 @@ picker.confirm_picker()
 - **Platform Agnostic**: Works with both Android and iOS
 - **Interactive Mode**: Interactive CLI for navigation experiments
 
+
+## How to Use
+for multiple actions add then, and keywords between actions
+for picking something in scrollview say pick ...
+for clicking say click 
+
 ## License
 
 [Your license information]
